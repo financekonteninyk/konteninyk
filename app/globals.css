@@ -1,0 +1,364 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light mode — crisp white with the signature blue accent */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 4%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 4%;
+
+    --primary: 231 84% 66%;          /* #6075F1 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 240 10% 4%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 42%;
+
+    --accent: 231 84% 66%;           /* #6075F1 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --ring: 231 84% 66%;             /* #6075F1 */
+
+    /* Editorial accent — used sparingly, never as a base color */
+    --editorial: 231 84% 66%;
+
+    --radius: 1.25rem;
+  }
+
+  .dark {
+    /* Dark mode — premium palette: near-black background, elevated dark
+       panels, and a signature blue accent used for primary actions and
+       focus states. */
+    --background: 240 10% 4%;        /* #09090B */
+    --foreground: 0 0% 100%;         /* #FFFFFF */
+
+    --card: 232 13% 12%;             /* #1A1B22 */
+    --card-foreground: 0 0% 100%;
+
+    --popover: 232 13% 12%;          /* #1A1B22 */
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 231 84% 66%;          /* #6075F1 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 232 14% 17%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 232 13% 15%;
+    --muted-foreground: 225 12% 65%;
+
+    --accent: 231 84% 66%;           /* #6075F1 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 58%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 232 13% 20%;
+    --input: 232 13% 20%;
+    --ring: 231 84% 66%;             /* #6075F1 */
+
+    --editorial: 231 84% 66%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-editorial {
+    color: hsl(var(--editorial));
+  }
+
+  .bg-editorial {
+    background-color: hsl(var(--editorial));
+  }
+
+  .glass {
+    background-color: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 0 8px 32px hsl(240 10% 4% / 0.12);
+  }
+
+  /* A slightly stronger variant for floating panels — modals, dropdowns,
+     the mobile menu — where a bit more separation from the page reads
+     as more premium than a razor-thin border alone. */
+  .glass-panel {
+    background-color: hsl(var(--card) / 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsl(var(--border) / 0.4);
+    box-shadow: 0 16px 48px hsl(240 10% 4% / 0.18);
+  }
+
+  /* Subtle blue-to-dark gradient — for hero backgrounds, primary buttons,
+     and highlight accents. Deliberately restrained: a soft glow rather
+     than a loud, busy gradient wash. */
+  .gradient-accent {
+    background-image: radial-gradient(
+      circle at 30% 20%,
+      hsl(231 84% 66% / 0.16),
+      transparent 60%
+    );
+  }
+
+  .gradient-accent-strong {
+    background-image: linear-gradient(135deg, hsl(231 84% 66%) 0%, hsl(231 70% 52%) 100%);
+  }
+
+  .eyebrow {
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .display-heading {
+    font-size: clamp(3rem, 8vw, 8.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Respect prefers-reduced-motion globally, on top of per-component checks */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Mobile bottom navigation bar (site-header.tsx) is fixed at the bottom of
+   the screen on mobile — reserve space so it never overlaps page content,
+   especially the footer. Bar height (~56px) + bottom offset (12px) + a
+   little breathing room. */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 88px;
+  }
+}
+
+/* Printing an invoice happens on a dedicated, minimal page
+   (app/admin/dashboard/invoices/[id]/print) with nothing else on it besides
+   the sidebar (already hidden via print:hidden) and a print button (also
+   print:hidden) — no complex visibility isolation needed. */
+
+/* Optional dark theme for the Invoice preview/print document. Scoped
+   overrides on top of the (light-by-default) Tailwind classes already in
+   InvoicePreview, so the light design never has to be rewritten — just
+   remapped when data-invoice-theme="dark" is set on the root element. */
+[data-invoice-theme="dark"] {
+  background-color: #171717 !important;
+}
+[data-invoice-theme="dark"].bg-white {
+  background-color: #171717 !important;
+}
+[data-invoice-theme="dark"] .text-slate-900,
+[data-invoice-theme="dark"] .text-slate-800,
+[data-invoice-theme="dark"] .text-slate-700 {
+  color: #f1f1f1 !important;
+}
+[data-invoice-theme="dark"] .text-slate-600,
+[data-invoice-theme="dark"] .text-slate-500 {
+  color: #a3a3a3 !important;
+}
+[data-invoice-theme="dark"] .text-slate-400,
+[data-invoice-theme="dark"] .text-slate-300 {
+  color: #737373 !important;
+}
+[data-invoice-theme="dark"] .bg-slate-50 {
+  background-color: #262626 !important;
+}
+[data-invoice-theme="dark"] .border-slate-200,
+[data-invoice-theme="dark"] .border-slate-300,
+[data-invoice-theme="dark"] .border-dashed.border-slate-300 {
+  border-color: #404040 !important;
+}
+[data-invoice-theme="dark"] .text-blue-800 {
+  color: #7dabe0 !important;
+}
+[data-invoice-theme="dark"] .bg-blue-800 {
+  background-color: #2c5aa0 !important;
+}
+[data-invoice-theme="dark"] .bg-gradient-to-r.from-slate-50.to-white {
+  background-image: linear-gradient(to right, #262626, #171717) !important;
+}
+[data-invoice-theme="dark"] .bg-sky-100 {
+  background-color: rgba(56, 132, 199, 0.15) !important;
+}
+[data-invoice-theme="dark"] .bg-amber-100 {
+  background-color: rgba(217, 158, 33, 0.15) !important;
+}
+[data-invoice-theme="dark"] .bg-slate-100 {
+  background-color: #262626 !important;
+}
+
+/* Note: an earlier version of this used a looping glow animation on the
+   consultation CTA buttons, but feedback was that any continuous looping
+   animation felt too distracting for a professional site — so now the
+   class just keeps a smooth hover transition, no idle animation at all. */
+.cta-attention {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cta-attention:hover {
+  box-shadow: 0 4px 16px hsl(var(--foreground) / 0.12);
+}
+
+/* Generic dark theme for print/PDF documents (Expense voucher, Payment
+   Confirmation, Proposal, MOU, Freelancer Offer, etc). Same approach as
+   [data-invoice-theme] above — scoped overrides on top of the light-by-
+   default Tailwind classes, so nothing has to be rewritten per document,
+   just remapped when data-print-theme="dark" is set. */
+[data-print-theme="dark"] {
+  background-color: #171717 !important;
+}
+[data-print-theme="dark"].bg-white {
+  background-color: #171717 !important;
+}
+[data-print-theme="dark"] .text-slate-900,
+[data-print-theme="dark"] .text-slate-800,
+[data-print-theme="dark"] .text-slate-700 {
+  color: #f1f1f1 !important;
+}
+[data-print-theme="dark"] .text-slate-600,
+[data-print-theme="dark"] .text-slate-500 {
+  color: #a3a3a3 !important;
+}
+[data-print-theme="dark"] .text-slate-400,
+[data-print-theme="dark"] .text-slate-300 {
+  color: #737373 !important;
+}
+[data-print-theme="dark"] .bg-slate-50,
+[data-print-theme="dark"] .bg-slate-100 {
+  background-color: #262626 !important;
+}
+[data-print-theme="dark"] .bg-gradient-to-br.from-slate-50.to-amber-50\/40 {
+  background-image: linear-gradient(to bottom right, #262626, #2a2318) !important;
+}
+[data-print-theme="dark"] .border-slate-200,
+[data-print-theme="dark"] .border-slate-300,
+[data-print-theme="dark"] .ring-slate-100 {
+  border-color: #404040 !important;
+}
+[data-print-theme="dark"] .border-t-slate-100,
+[data-print-theme="dark"] .border-t-slate-200 {
+  border-top-color: #404040 !important;
+}
+[data-print-theme="dark"] .text-blue-800 {
+  color: #7dabe0 !important;
+}
+[data-print-theme="dark"] .bg-blue-800 {
+  background-color: #2c5aa0 !important;
+}
+[data-print-theme="dark"] .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+}
+[data-print-theme="dark"] .bg-emerald-100 {
+  background-color: rgba(16, 185, 129, 0.18) !important;
+}
+[data-print-theme="dark"] .text-emerald-600,
+[data-print-theme="dark"] .text-emerald-700 {
+  color: #34d399 !important;
+}
+[data-print-theme="dark"] .bg-amber-50,
+[data-print-theme="dark"] .bg-amber-100 {
+  background-color: rgba(217, 158, 33, 0.15) !important;
+}
+[data-print-theme="dark"] .text-amber-800 {
+  color: #fbbf24 !important;
+}
+[data-print-theme="dark"] .bg-gradient-to-br.from-slate-50.via-white.to-amber-50\/50 {
+  background-image: linear-gradient(to bottom right, #262626, #171717, #2a2318) !important;
+}
+[data-print-theme="dark"] .bg-gradient-to-br.from-slate-50.via-white.to-violet-50\/60 {
+  background-image: linear-gradient(to bottom right, #262626, #171717, #241f2e) !important;
+}
+[data-print-theme="dark"] .bg-slate-50\/50 {
+  background-color: #262626 !important;
+}
+[data-print-theme="dark"] .bg-violet-50,
+[data-print-theme="dark"] .bg-violet-100 {
+  background-color: rgba(139, 92, 246, 0.15) !important;
+}
+[data-print-theme="dark"] .text-violet-600,
+[data-print-theme="dark"] .text-violet-700 {
+  color: #c4b5fd !important;
+}
+[data-print-theme="dark"] .border-violet-200 {
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+[data-print-theme="dark"] .bg-slate-100 {
+  background-color: #262626 !important;
+}
+
+/* Print documents (invoices, remittance advice, proposals, MOU, offers) —
+   tighten the page so content that fits comfortably doesn't get pushed
+   to an unnecessary second page with a big blank gap. */
+@media print {
+  @page {
+    margin: 10mm;
+  }
+  #expense-print-area,
+  #payment-confirmation-print-area,
+  #offer-print-area,
+  #proposal-print-area,
+  #mou-print-area {
+    box-shadow: none !important;
+  }
+}
